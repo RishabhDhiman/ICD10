@@ -20,22 +20,24 @@ subCategory();
 var abc;
 
 var json;
+var index=0;
+var fileName=fileName;
 
 function subCategory() {
   abc=0;
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
   var json = JSON.parse(stringContent);
-  var categoryName = json.ICD10CM.chapter[0].desc.substring(json.ICD10CM.chapter[0].desc.lastIndexOf(" ") + 1) + " " + json.ICD10CM.chapter[0].desc.substring(0, json.ICD10CM.chapter[0].desc.lastIndexOf(" ") - 1)
-  var array = json.ICD10CM.chapter[0].sectionIndex.sectionRef;
+  var categoryName = json.ICD10CM.chapter[index].desc.substring(json.ICD10CM.chapter[index].desc.lastIndexOf(" ") + 1) + " " + json.ICD10CM.chapter[index].desc.substring(0, json.ICD10CM.chapter[index].desc.lastIndexOf(" ") - 1)
+  var array = json.ICD10CM.chapter[index].sectionIndex.sectionRef;
   for (z in array) {
     var mItem = {};
     mItem["category"] = categoryName;
     mItem["subCat"] = array[z]["-id"] + " " + array[z]["#text"].trim();
-    var subCat = json.ICD10CM.chapter[0].section[z].diag;
+    var subCat = json.ICD10CM.chapter[index].section[z].diag;
     insertIntoDb(mItem, subCat, true);
   }
-  fs.appendFileSync("A00-B99.json", "]", (err) => {
+  fs.appendFileSync(fileName, "]", (err) => {
     if (err) {
       console.log("Failed");
       return;
@@ -98,7 +100,7 @@ function subSubCategory(mItem) {
     }
   }*/
   if (zx == 0) {
-    fs.appendFileSync("A00-B99.json", "[" + JSON.stringify(mItem), (err) => {
+    fs.appendFileSync(fileName, "[" + JSON.stringify(mItem), (err) => {
       if (err) {
         console.log("Failed");
         return;
@@ -108,7 +110,7 @@ function subSubCategory(mItem) {
     console.log("Inserted " + zx);
   }
   else {
-    fs.appendFileSync("A00-B99.json", "," + JSON.stringify(mItem), (err) => {
+    fs.appendFileSync(fileName, "," + JSON.stringify(mItem), (err) => {
       if (err) {
         console.log("Failed");
         return;
@@ -124,7 +126,7 @@ function subSubCategory(mItem) {
 
 
 function sub2Category() {
-  var fileContent = fs.readFileSync("A00-B99.json");
+  var fileContent = fs.readFileSync(fileName);
 var stringContent = fileContent.toString();
 json = JSON.parse(stringContent);
 
@@ -142,7 +144,7 @@ json = JSON.parse(stringContent);
 function subSub2Category(url, index) {
 
 
-  var fileContent = fs.readFileSync("A00-B99.json");
+  var fileContent = fs.readFileSync(fileName);
   var stringContent = fileContent.toString();
   json = JSON.parse(stringContent);
 
@@ -175,7 +177,7 @@ function subSub2Category(url, index) {
       }
     }
   }
-  fs.writeFileSync("A00-B99.json", JSON.stringify(json), (err) => {
+  fs.writeFileSync(fileName, JSON.stringify(json), (err) => {
     if (err) {
       console.log("Failed");
       return;
