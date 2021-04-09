@@ -37,7 +37,12 @@ function subCategory() {
     mItem["category"] = categoryName;
     mItem["subCat"] = array[z]["-id"] + " " + array[z]["#text"].trim();
     var subCat = json.ICD10CM.chapter[index].section[z].diag;
-    insertIntoDb(mItem, subCat, true);
+    if (subCat instanceof Array) {
+      insertIntoDb(mItem, subCat, true);
+    }
+    else {
+      insertIntoDbNonArray(mItem, subCat, true);
+    }
   }
   fs.appendFileSync(fileName, "]", (err) => {
     if (err) {
@@ -69,6 +74,27 @@ function insertIntoDb(mItem, subCat, run) {
   }
 }
 
+
+function insertIntoDbNonArray(mItem, subCat, run) {
+  mItem["disease"] = subCat.name + " " + subCat.desc;
+  if (run) {
+    mItem["url"] = "https://www.icd10data.com/ICD10CM/Codes/A00-B99/" + mItem.subCat.substring(0, mItem.subCat.indexOf(" ")) + "/" + mItem.disease.substring(0, mItem.disease.indexOf(" ")) + "-/";
+    previous = mItem["url"];
+  }
+  else {
+    mItem["url"] = previous + mItem.disease.substring(0, mItem.disease.indexOf(" ")) + "/"
+  }
+  subSubCategory(mItem);
+  zx++;
+  if (subCat.diag != null) {
+    if (subCat.diag instanceof Array) {
+      insertIntoDb(mItem, subCat.diag, false);
+    }
+    else {
+      insertIntoDbNonArray(mItem, subCat.diag, false);
+    }
+  }
+}
 function subSubCategory(mItem) {
   // var res = request("GET", mItem.url);
   //var site = new JSDOM(res.getBody().toString());
@@ -166,9 +192,7 @@ function subSub2Category(url, index) {
           }
         }
         else if (html.trim().includes("<span>Applicable To</span>") && html.trim().indexOf("<span>Applicable To</span>") == 0) {
-          console.log(index);
-          console.log(html.trim());
-          json[index].description = json[index].description + html.trim().replace(/span/g, "p");
+          json[index].description = json[index].description + html.trim().replaceAll("span", "p");
         }
         else if (html.trim() == "Approximate Synonyms") {
           for (let step = parseInt(j) + 1; j < items[i].childNodes; step++) {
