@@ -20,11 +20,13 @@ subCategory();
 var abc;
 
 var json;
-var index=1;
-var fileName="C00-D49";
+var index;
+var fileName;
 
 function subCategory() {
   abc=0;
+  fileName="C00-D49";
+  index=1;
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
   var json = JSON.parse(stringContent);
