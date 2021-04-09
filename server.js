@@ -20,23 +20,23 @@ subCategory();
 var abc;
 
 var json;
-var index;
+var jindex;
 var fileName;
 
 function subCategory() {
   abc=0;
   fileName="C00-D49";
-  index=1;
+  jindex=1;
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
   var json = JSON.parse(stringContent);
-  var categoryName = json.ICD10CM.chapter[index].desc.substring(json.ICD10CM.chapter[index].desc.lastIndexOf(" ") + 1) + " " + json.ICD10CM.chapter[index].desc.substring(0, json.ICD10CM.chapter[index].desc.lastIndexOf(" ") - 1)
-  var array = json.ICD10CM.chapter[index].sectionIndex.sectionRef;
+  var categoryName = json.ICD10CM.chapter[jindex].desc.substring(json.ICD10CM.chapter[jindex].desc.lastIndexOf(" ") + 1) + " " + json.ICD10CM.chapter[jindex].desc.substring(0, json.ICD10CM.chapter[jindex].desc.lastIndexOf(" ") - 1)
+  var array = json.ICD10CM.chapter[jindex].sectionIndex.sectionRef;
   for (z in array) {
     var mItem = {};
     mItem["category"] = categoryName;
     mItem["subCat"] = array[z]["-id"] + " " + array[z]["#text"].trim();
-    var subCat = json.ICD10CM.chapter[index].section[z].diag;
+    var subCat = json.ICD10CM.chapter[jindex].section[z].diag;
     insertIntoDb(mItem, subCat, true);
   }
   fs.appendFileSync(fileName, "]", (err) => {
