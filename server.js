@@ -20,8 +20,8 @@ subCategory();
 var abc;
 
 var json;
-var index=0;
-var fileName=fileName;
+var index=1;
+var fileName="C00-D49";
 
 function subCategory() {
   abc=0;
