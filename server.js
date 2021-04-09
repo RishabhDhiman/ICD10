@@ -166,6 +166,8 @@ function subSub2Category(url, index) {
           }
         }
         else if (html.trim().includes("<span>Applicable To</span>") && html.trim().indexOf("<span>Applicable To</span>") == 0) {
+          console.log(index);
+          console.log(html.trim());
           json[index].description = json[index].description + html.trim().replaceAll("span", "p");
         }
         else if (html.trim() == "Approximate Synonyms") {
