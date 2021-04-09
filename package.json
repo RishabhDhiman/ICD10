@@ -1,0 +1,27 @@
+{
+  "name": "icd",
+  "version": "1.0.0",
+  "description": "Script ",
+  "main": "server.js",
+  "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.3",
+    "arraylist": "^0.1.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "fcm-node": "^1.5.2",
+    "got": "^7.1.0",
+    "hashmap": "^2.4.0",
+    "jsdom": "^16.4.0",
+    "linked-list": "^2.1.0",
+    "mongodb": "^3.5.9",
+    "request": "^2.88.2",
+    "rxjs": "^6.6.0",
+    "sync-request": "^6.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
