@@ -26,9 +26,9 @@ function subCategory() {
   abc = 0;
 
 
-  jIndex = 1;
+  jIndex = 18;
 
-  fileName = "C00-D49.json";
+  fileName = "S00-T88.json";
 
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
@@ -199,7 +199,7 @@ function subSub2Category(url, index) {
           }
         }
         else if (html.trim().includes("<span>Applicable To</span>") && html.trim().indexOf("<span>Applicable To</span>") == 0) {
-          json[index].description = json[index].description + html.trim().replaceAll("span", "p");
+          json[index].description = json[index].description + html.trim().replace(/span/g, "p");
         }
         else if (html.trim() == "Approximate Synonyms") {
           for (let step = parseInt(j) + 1; j < items[i].childNodes; step++) {
