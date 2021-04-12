@@ -167,7 +167,7 @@ function sub2Category() {
   var z = 0;
   abc = z;
   function f() {
-    setTimeout(subSub2Category(json[z].url, z),500);
+    setTimeout(function () {subSub2Category(json[z].url, z)},500);
     if (z++ < json.length)
       setImmediate(f);
     else {
