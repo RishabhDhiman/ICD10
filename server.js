@@ -11,7 +11,7 @@ var ArrayList = require("arraylist");
 const { Logger } = require("mongodb");
 var address = new ArrayList();
 var zx = 0;
-var count = 1;
+var count = 1; 
 var file = 0;
 var previous = "";
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,9 +26,9 @@ function subCategory() {
   abc = 0;
 
 
-  jIndex = 17;
+  jIndex = 5;
 
-  fileName = "R00-R99.json";
+  fileName = "G00-G99.json";
 
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
@@ -65,7 +65,8 @@ function insertIntoDb(mItem, subCat, run) {
   for (k in subCat) {
     mItem["disease"] = subCat[k].name + " " + subCat[k].desc;
     if (run) {
-      mItem["url"] = "https://www.icd10data.com/ICD10CM/Codes/A00-B99/" + mItem.subCat.substring(0, mItem.subCat.indexOf(" ")) + "/" + mItem.disease.substring(0, mItem.disease.indexOf(" ")) + "-/";
+      mItem["url"] = "https://www.icd10data.com/ICD10CM/Codes/A00-B99/" + mItem.subCat.substring(0, mItem.subCat.indexOf(" ")) + "/" + mItem.disease
+      .substring(0, mItem.disease.indexOf(" ")) + "-/";
       previous = mItem["url"];
     }
     else {
@@ -74,7 +75,12 @@ function insertIntoDb(mItem, subCat, run) {
     subSubCategory(mItem);
     zx++;
     if (subCat[k].diag != null) {
-      insertIntoDb(mItem, subCat[k].diag, false);
+      if (subCat[k].diag instanceof Array) {
+        insertIntoDb(mItem, subCat[k].diag, false);
+      }
+      else {
+        insertIntoDbNonArray(mItem, subCat[k].diag, false);
+      }
     }
   }
 }
@@ -82,6 +88,9 @@ function insertIntoDb(mItem, subCat, run) {
 
 function insertIntoDbNonArray(mItem, subCat, run) {
   mItem["disease"] = subCat.name + " " + subCat.desc;
+  if(mItem["disease"]=="Y36.6 War operations involving biological weapons"){
+    console.log("de");
+  }
   if (run) {
     mItem["url"] = "https://www.icd10data.com/ICD10CM/Codes/A00-B99/" + mItem.subCat.substring(0, mItem.subCat.indexOf(" ")) + "/" + mItem.disease.substring(0, mItem.disease.indexOf(" ")) + "-/";
     previous = mItem["url"];
@@ -167,7 +176,7 @@ function sub2Category() {
   var z = 0;
   abc = z;
   function f() {
-    setTimeout(function () {subSub2Category(json[z].url, z)},500);
+    subSub2Category(json[z].url, z);
     if (z++ < json.length)
       setImmediate(f);
     else {
