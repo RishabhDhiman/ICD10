@@ -26,9 +26,9 @@ function subCategory() {
   abc = 0;
 
 
-  jIndex = 5;
+  jIndex = 6;
 
-  fileName = "G00-G99.json";
+  fileName = "H00-H59.json";
 
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
