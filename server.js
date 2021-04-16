@@ -190,15 +190,18 @@ function sub2Category() {
   var stringContent = fileContent.toString();
   json = JSON.parse(stringContent);
 
-  var z = 0;
+  var z = 11000;
   abc = z;
-  function f() {
+function f() {
+    setTimeout(()=>{
     subSub2Category(json[z].url, z);
     if (z++ < json.length)
       setImmediate(f);
     else {
       console.log("completed");
     }
+    },500);
+    
   } f();
 }
 
