@@ -11,7 +11,7 @@ var ArrayList = require("arraylist");
 const { Logger } = require("mongodb");
 var address = new ArrayList();
 var zx = 0;
-var count = 1; 
+var count = 1;
 var file = 0;
 var previous = "";
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,20 +26,37 @@ function subCategory() {
   abc = 0;
 
 
-  jIndex = 6;
+  jIndex = 18;
 
-  fileName = "H00-H59.json";
+  fileName = "S00-T88.json";
 
   var fileContent = fs.readFileSync("data.json");
   var stringContent = fileContent.toString();
   var json = JSON.parse(stringContent);
   var categoryName = json.ICD10CM.chapter[jIndex].desc.substring(json.ICD10CM.chapter[jIndex].desc.lastIndexOf(" ") + 1) + " " + json.ICD10CM.chapter[jIndex].desc.substring(0, json.ICD10CM.chapter[jIndex].desc.lastIndexOf(" ") - 1)
-  var array = json.ICD10CM.chapter[jIndex].sectionIndex.sectionRef;
-  for (z in array) {
+  //var array = json.ICD10CM.chapter[jIndex].sectionIndex.sectionRef;
+  var array = json.ICD10CM.chapter[jIndex].section;
+  if (array instanceof Array) {
+    for (z in array) {
+      var mItem = {};
+      mItem["category"] = categoryName;
+      mItem["subCat"] = array[z].desc.substring(array[z].desc.indexOf("(")+1,array[z].desc.indexOf(")")) + " " + array[z].desc.substring(0,array[z].desc.indexOf("(")-1);
+      var subCat = json.ICD10CM.chapter[jIndex].section[z].diag;
+      if (subCat != null) {
+        if (subCat instanceof Array) {
+          insertIntoDb(mItem, subCat, true);
+        }
+        else {
+          insertIntoDbNonArray(mItem, subCat, true);
+        }
+      }
+    }
+  }
+  else {
     var mItem = {};
     mItem["category"] = categoryName;
-    mItem["subCat"] = array[z]["-first"] + "-" + array[z]["-last"] + " " + array[z]["#text"].trim();
-    var subCat = json.ICD10CM.chapter[jIndex].section[z].diag;
+    mItem["subCat"] = array["-first"] + "-" + array["-last"] + " " + array["#text"].trim();
+    var subCat = json.ICD10CM.chapter[jIndex].section.diag;
     if (subCat != null) {
       if (subCat instanceof Array) {
         insertIntoDb(mItem, subCat, true);
@@ -66,7 +83,7 @@ function insertIntoDb(mItem, subCat, run) {
     mItem["disease"] = subCat[k].name + " " + subCat[k].desc;
     if (run) {
       mItem["url"] = "https://www.icd10data.com/ICD10CM/Codes/A00-B99/" + mItem.subCat.substring(0, mItem.subCat.indexOf(" ")) + "/" + mItem.disease
-      .substring(0, mItem.disease.indexOf(" ")) + "-/";
+        .substring(0, mItem.disease.indexOf(" ")) + "-/";
       previous = mItem["url"];
     }
     else {
@@ -88,7 +105,7 @@ function insertIntoDb(mItem, subCat, run) {
 
 function insertIntoDbNonArray(mItem, subCat, run) {
   mItem["disease"] = subCat.name + " " + subCat.desc;
-  if(mItem["disease"]=="Y36.6 War operations involving biological weapons"){
+  if (mItem["disease"] == "Y36.6 War operations involving biological weapons") {
     console.log("de");
   }
   if (run) {
